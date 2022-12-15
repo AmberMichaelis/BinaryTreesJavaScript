@@ -12,32 +12,23 @@ class BST {
     }
 
     add(data) {
-        const node = this.root;
+        if (!data) throw new Error('Data cannot be null');
+        this.root = this.#addHelper(this.root, data);
+        console.log(this.root)
+    }
+
+    #addHelper(node, data) {
         if (!node) {
-            this.root = new Node(data);
-            return;
-        } else {
-            const searchTree = node => {
-                if (data < node.data) {
-                    if (node.left === null) {
-                        node.left = new Node(data);
-                        return;
-                    } else if (node.left) {
-                        return searchTree(node.left);
-                    }
-                } else if (data > node.data) {
-                    if (node.right === null) {
-                        node.right = new Node(data);
-                        return;
-                    } else if (node.right) {
-                        return searchTree(node.right);
-                    }
-                } else {
-                    return null;
-                }
-            };
-            return searchTree(node);
+            return new Node(data);
         }
+        if (data < node.data) {
+            node.left = this.#addHelper(node.left, data);
+        } else if (data > node.data) {
+            node.right = this.#addHelper(node.right, data);
+        } else {
+            return node;
+        }
+        return node;
     }
 
     findMax() {
@@ -237,7 +228,7 @@ bst.add(5);
 bst.add(7);
 bst.add(20);
 bst.add(10);
-bst.inOrder2();
+bst.inOrder();
 bst.preOrder();
 bst.postOrder();
 bst.levelOrder();
