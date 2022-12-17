@@ -14,7 +14,6 @@ class BST {
     add(data) {
         if (!data) throw new Error('Data cannot be null');
         this.root = this.#addHelper(this.root, data);
-        console.log(this.root)
     }
 
     #addHelper(node, data) {
@@ -81,40 +80,38 @@ class BST {
     }
 
     remove(data) {
-        const removeNode = function (node, data) {
-            if (!node) {
+        this.root = this.#removeHelper(this.root, data);
+    }
+
+    #removeHelper(current, data) {
+        if (!current) {
+            return null;
+        }
+        if (data === current.data) {
+            if (!current.left && !current.right) {
                 return null;
             }
-            if (data === node.data) {
-                //node has no children
-                if (!node.left && !node.right) {
-                    return null;
-                }
-                //node has no left children
-                if (!node.left) {
-                    return node.right;
-                }
-                //node has no right children
-                if (!node.right) {
-                    return node.left;
-                }
-                //node has two children
-                let tempNode = node.right;
-                while (tempNode.left) {
-                    tempNode = tempNode.left;
-                }
-                node.data = tempNode.data;
-                node.right = removeNode(node.right, tempNode.data)
-                return node;
-            } else if (data < node.data) {
-                node.left = removeNode(node.left, data);
-                return node;
-            } else {
-                node.right = removeNode(node.right, data);
-                return node;
+            if (!current.right) {
+                return current.left;
             }
+            if (!current.left) {
+                return current.right;
+            }
+            let smallestValue = this.#findSmallestValue(current.right);
+            current.data = smallestValue;
+            current.right = this.#removeHelper(current.right, smallestValue);
+            return current;
         }
-        this.root = removeNode(this.root, data);
+        if (data < current.data) {
+            current.left = this.#removeHelper(current.left, data);
+            return current;
+        }
+        current.right = this.#removeHelper(current.right, data);
+        return current;
+    }
+
+    #findSmallestValue(node) {
+        return !node.left ? node.data : this.#findSmallestValue(node.left);
     }
 
     // levels between root and first node without two children
@@ -228,6 +225,14 @@ bst.add(5);
 bst.add(7);
 bst.add(20);
 bst.add(10);
+bst.remove(9);
+bst.isPresent(9);
+bst.remove(3);
+bst.isPresent(3);
+bst.remove(4);
+bst.isPresent(4);
+bst.remove(7);
+bst.isPresent(7);
 bst.inOrder();
 bst.preOrder();
 bst.postOrder();
