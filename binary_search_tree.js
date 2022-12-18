@@ -79,6 +79,28 @@ class BST {
         return false;
     }
 
+    get(data) {
+        if (!data) throw new Error('Data cannot be null')
+        return this.#getHelper(this.root, data);
+    }
+
+    #getHelper(current, data) {
+        if (current) {
+            if (data === current.data) {
+                console.log(`${data} is present`)
+                return true;
+            }
+            if (data < current.data) {
+                return this.#getHelper(current.left, data);
+            } else {
+                return this.#getHelper(current.right, data);
+            }
+        }
+        console.log(`${data} is not present`);
+        return false;
+    }
+
+    // uses successor method
     remove(data) {
         this.root = this.#removeHelper(this.root, data);
     }
@@ -111,6 +133,8 @@ class BST {
     }
 
     #findSmallestValue(node) {
+        // console.log(`smallest is: ${node.data}`);
+        // console.log('root is:', this.root.data);
         return !node.left ? node.data : this.#findSmallestValue(node.left);
     }
 
@@ -226,7 +250,7 @@ bst.add(7);
 bst.add(20);
 bst.add(10);
 bst.remove(9);
-bst.isPresent(9);
+bst.get(9);
 bst.remove(3);
 bst.isPresent(3);
 bst.remove(4);
